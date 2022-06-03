@@ -1,0 +1,60 @@
+import cv2
+import os
+import numpy as np
+imgpath ='./wrong_ann/images'
+annpath = './wrong_ann/labels'
+arr = os.listdir(imgpath)
+list3 = []
+print('total no. of images ',len(arr))
+for item in arr:
+   filename = item.split('.')[0]
+   img = cv2.imread(os.path.join(imgpath,item))
+   height,width,_ = img.shape
+   print(width,height)
+   label_file = os.path.join(annpath,filename + '.txt')
+   try:
+       f = open(label_file,'r')
+   except FileNotFoundError:
+       list3.append(item)
+       continue
+   
+   line = f.readline()
+   while line:
+       print(line)
+       list1 =line.split(' ')
+       tag = list1[0]
+       x = list1[1]
+       y = list1[2]
+       w = list1[3]
+       h = list1[4]     
+       x1 = int( (float(x) - 0.5 * float(w)) *  width )
+       y1 = int( (float(y) - 0.5 * float(h)) * height  )
+       x2 = int((float(x) + 0.5 * float(w)) * width)
+       y2 = int((float(y) + 0.5 * float(h)) * height)
+       z = int(tag)
+       print(x1,y1,x2,y2,z)
+       
+       if z ==0:
+          color = (0, 0, 0) 
+       else:
+           color = (0,255,0)    
+       # Line thickness of -1 px
+       # Thickness of -1 will fill the entire shape
+       thickness = 2
+       #image = cv2.rectangle(img, int(np.float32(x1)),int(np.float32(y1)),int(np.float32(x2)),int(np.float32(y2)) )
+       img = cv2.rectangle(img,(x1,y1),(x2,y2),color,thickness)
+       #image = cv2.rectangle(img, (50,60),(80,100),color,thickness)
+       line = f.readline()
+   filename = './folder1/' + item       
+   cv2.imwrite(filename, img)
+       
+       
+       
+   
+   
+
+   print(filename)
+print(list3)
+   
+   
+ 
